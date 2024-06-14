@@ -5,18 +5,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <SpaRoot>..\agendadobarbeiroweb.client</SpaRoot>
-    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-    <SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="JWT" Version="10.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
-      <Version>8.*-*</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -31,9 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AgendaDoBarbeiro.Core\AgendaDoBarbeiro.Core.csproj" />
     <ProjectReference Include="..\..\AgendaDoBarbeiro.Service\AgendaDoBarbeiro.Service.csproj" />
-    <ProjectReference Include="..\agendadobarbeiroweb.client\agendadobarbeiroweb.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
 
 </Project>

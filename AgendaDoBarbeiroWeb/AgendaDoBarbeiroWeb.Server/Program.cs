@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IAddressService, AddressService>();
 
 builder.Services.AddDbContext<AgendaDoBarbeiroContext>(
                 options =>
