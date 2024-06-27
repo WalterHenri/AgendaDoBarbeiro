@@ -10,7 +10,6 @@ namespace AgendaDoBarbeiro.Core.Dtos
     {
         public required string Phone { get; set; }  //Unique Telephone Number
         public required string Password { get; set; }
-
         public required string Role { get; set; }
     }
 }

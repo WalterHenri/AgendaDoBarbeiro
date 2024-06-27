@@ -19,6 +19,8 @@ public partial class AgendaDoBarbeiroContext : DbContext
 
     public virtual DbSet<BarberService> BarberServices { get; set; }
 
+    public virtual DbSet<Enterprise> Enterprises { get; set; }
+
     public virtual DbSet<Inventory> Inventories { get; set; }
 
     public virtual DbSet<Item> Items { get; set; }
@@ -29,7 +31,11 @@ public partial class AgendaDoBarbeiroContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<Professional> Professionals { get; set; }
+
     public virtual DbSet<ProfessionalService> ProfessionalServices { get; set; }
+
+    public virtual DbSet<ProfessionalWorkDay> ProfessionalWorkDays { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
@@ -47,9 +53,11 @@ public partial class AgendaDoBarbeiroContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=AgendaDoBarbeiro;Username=postgres;Password=?v4quej4d4?");
+    public virtual DbSet<WorkDay> WorkDays { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=AgendaDoBarbeiro;Username=postgres;Password=?v4quej4d4?");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,10 +103,39 @@ public partial class AgendaDoBarbeiroContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
+            entity.Property(e => e.EnterpriseId).HasColumnName("enterprise_id");
             entity.Property(e => e.EstimatedTime).HasColumnName("estimated_time");
             entity.Property(e => e.Price)
                 .HasPrecision(10, 2)
                 .HasColumnName("price");
+
+            entity.HasOne(d => d.Enterprise).WithMany(p => p.BarberServices)
+                .HasForeignKey(d => d.EnterpriseId)
+                .HasConstraintName("barber_services_enterprise_id_fkey");
+        });
+
+        modelBuilder.Entity<Enterprise>(entity =>
+        {
+            entity.HasKey(e => e.EnterpriseId).HasName("enterprises_pkey");
+
+            entity.ToTable("enterprises");
+
+            entity.Property(e => e.EnterpriseId).HasColumnName("enterprise_id");
+            entity.Property(e => e.Cnpj)
+                .HasMaxLength(20)
+                .HasColumnName("cnpj");
+            entity.Property(e => e.Cpf)
+                .HasMaxLength(20)
+                .HasColumnName("cpf");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(20)
+                .HasColumnName("phone");
+            entity.Property(e => e.SocialName)
+                .HasMaxLength(100)
+                .HasColumnName("social_name");
         });
 
         modelBuilder.Entity<Inventory>(entity =>
@@ -198,6 +235,32 @@ public partial class AgendaDoBarbeiroContext : DbContext
                 .HasColumnName("price");
         });
 
+        modelBuilder.Entity<Professional>(entity =>
+        {
+            entity.HasKey(e => e.ProfessionalId).HasName("professionals_pkey");
+
+            entity.ToTable("professionals");
+
+            entity.Property(e => e.ProfessionalId)
+                .ValueGeneratedNever()
+                .HasColumnName("professional_id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.EnterpriseId).HasColumnName("enterprise_id");
+            entity.Property(e => e.FirstMessage).HasColumnName("first_message");
+            entity.Property(e => e.Whatsapp)
+                .HasMaxLength(50)
+                .HasColumnName("whatsapp");
+
+            entity.HasOne(d => d.Enterprise).WithMany(p => p.Professionals)
+                .HasForeignKey(d => d.EnterpriseId)
+                .HasConstraintName("professionals_enterprise_id_fkey");
+
+            entity.HasOne(d => d.ProfessionalNavigation).WithOne(p => p.Professional)
+                .HasForeignKey<Professional>(d => d.ProfessionalId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("professionals_professional_id_fkey");
+        });
+
         modelBuilder.Entity<ProfessionalService>(entity =>
         {
             entity.HasKey(e => e.ProfessionalServiceId).HasName("professional_services_pkey");
@@ -215,6 +278,24 @@ public partial class AgendaDoBarbeiroContext : DbContext
             entity.HasOne(d => d.Professional).WithMany(p => p.ProfessionalServices)
                 .HasForeignKey(d => d.ProfessionalId)
                 .HasConstraintName("professional_services_professional_id_fkey");
+        });
+
+        modelBuilder.Entity<ProfessionalWorkDay>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("professional_work_days");
+
+            entity.Property(e => e.ProfessionalId).HasColumnName("professional_id");
+            entity.Property(e => e.WorkDayId).HasColumnName("work_day_id");
+
+            entity.HasOne(d => d.Professional).WithMany()
+                .HasForeignKey(d => d.ProfessionalId)
+                .HasConstraintName("professional_work_days_professional_id_fkey");
+
+            entity.HasOne(d => d.WorkDay).WithMany()
+                .HasForeignKey(d => d.WorkDayId)
+                .HasConstraintName("professional_work_days_work_day_id_fkey");
         });
 
         modelBuilder.Entity<Review>(entity =>
@@ -434,6 +515,20 @@ public partial class AgendaDoBarbeiroContext : DbContext
                         j.IndexerProperty<long>("UserId").HasColumnName("user_id");
                         j.IndexerProperty<long>("RoleId").HasColumnName("role_id");
                     });
+        });
+
+        modelBuilder.Entity<WorkDay>(entity =>
+        {
+            entity.HasKey(e => e.WorkDayId).HasName("work_days_pkey");
+
+            entity.ToTable("work_days");
+
+            entity.Property(e => e.WorkDayId).HasColumnName("work_day_id");
+            entity.Property(e => e.ClosesAt).HasColumnName("closes_at");
+            entity.Property(e => e.Day)
+                .HasMaxLength(20)
+                .HasColumnName("day");
+            entity.Property(e => e.StartAt).HasColumnName("start_at");
         });
 
         OnModelCreatingPartial(modelBuilder);

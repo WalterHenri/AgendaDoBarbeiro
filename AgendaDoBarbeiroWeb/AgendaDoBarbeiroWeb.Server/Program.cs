@@ -1,6 +1,8 @@
-using AgendaDoBarbeiro.Core;
-using AgendaDoBarbeiro.Core.Service;
-using AgendaDoBarbeiro.Service;
+global using AgendaDoBarbeiro.Core;
+global using AgendaDoBarbeiro.Core.Service;
+global using AgendaDoBarbeiro.Core.Dtos;
+global using AgendaDoBarbeiro.Core.Enum;
+global using AgendaDoBarbeiro.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IProfessionalService, AgendaDoBarbeiro.Service.ProfessionalService>();
+builder.Services.AddTransient<IEnterpriseService, EnterpriseService>();
+builder.Services.AddTransient<IAddressService, AddressService>();
+
 
 builder.Services.AddDbContext<AgendaDoBarbeiroContext>(
                 options =>
@@ -27,8 +34,11 @@ builder.Services.AddDbContext<AgendaDoBarbeiroContext>(
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "AgendaDoBarbeiroApi", Version = "v1" });
+    
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,

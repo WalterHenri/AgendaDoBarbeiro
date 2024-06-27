@@ -21,6 +21,8 @@ public partial class User
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
+    public virtual Professional? Professional { get; set; }
+
     public virtual ICollection<ProfessionalService> ProfessionalServices { get; set; } = new List<ProfessionalService>();
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();

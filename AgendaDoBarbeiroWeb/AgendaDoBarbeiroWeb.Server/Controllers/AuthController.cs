@@ -1,14 +1,11 @@
-﻿using AgendaDoBarbeiro.Core.Dtos;
-using AgendaDoBarbeiro.Core;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using AgendaDoBarbeiro.Core.Service;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
- 
-namespace AgendaDoBarbeiroWeb.Server.Controllers
+
+namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,7 +20,7 @@ namespace AgendaDoBarbeiroWeb.Server.Controllers
         }
 
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
 
         public ActionResult<User> Register(UserDto request)
         {
@@ -31,11 +28,12 @@ namespace AgendaDoBarbeiroWeb.Server.Controllers
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             newUser.PhoneNumber = request.Phone;
             newUser.Password = passwordHash;
+            newUser.Roles.Add(new Role { RoleId = (long)Roles.USUARIO});
             _service.Create(newUser);
             return Ok(newUser);
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<ActionResult<User>> Login(UserDto request)
         {
             var users = await _service.GetAll();

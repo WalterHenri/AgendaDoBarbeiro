@@ -13,6 +13,10 @@ public partial class BarberService
 
     public int EstimatedTime { get; set; }
 
+    public long? EnterpriseId { get; set; }
+
+    public virtual Enterprise? Enterprise { get; set; }
+
     public virtual ICollection<ProfessionalService> ProfessionalServices { get; set; } = new List<ProfessionalService>();
 
     public virtual ICollection<ScheduledService> ScheduledServices { get; set; } = new List<ScheduledService>();

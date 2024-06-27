@@ -1,17 +1,17 @@
-﻿using AgendaDoBarbeiro.Core;
-using AgendaDoBarbeiro.Core.Dtos;
-using AgendaDoBarbeiro.Core.Service;
+﻿using AgendaDoBarbeiro.Core.Service;
+using AgendaDoBarbeiro.Core;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace AgendaDoBarbeiro.Service
 {
     public class AuthService : IAuthService
     {
         private readonly AgendaDoBarbeiroContext _dbContext;
-        public AuthService(AgendaDoBarbeiroContext dbContext) { 
-            _dbContext = dbContext; 
+        public AuthService(AgendaDoBarbeiroContext dbContext)
+        {
+            _dbContext = dbContext;
         }
-        
 
         public long Create(User user)
         {
@@ -22,22 +22,26 @@ namespace AgendaDoBarbeiro.Service
 
         public void Delete(long id)
         {
-            throw new NotImplementedException();
+            var user = _dbContext.Users.Find(id);
+            if (user != null)
+                _dbContext.Remove(user);
+            _dbContext.SaveChanges();
         }
 
-        public Task<User> Get(long id)
+        public async Task<User?> Get(long id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Users.FindAsync(id);
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<User?>> GetAll()
         {
             return await _dbContext.Users.ToListAsync();
         }
 
         public void Update(User user)
         {
-            throw new NotImplementedException();
+            _dbContext.Update(user);
+            _dbContext.SaveChanges();
         }
     }
 }
