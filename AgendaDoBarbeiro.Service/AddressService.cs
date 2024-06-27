@@ -1,10 +1,11 @@
-﻿using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AgendaDoBarbeiro.Core;
 using AgendaDoBarbeiro.Core.Service;    
+
 
 namespace AgendaDoBarbeiro.Service
 {
@@ -27,6 +28,7 @@ namespace AgendaDoBarbeiro.Service
         public Address? Get(int AddressId)
         {
             return _dbContext.Addresses.FirstOrDefault(a => a.AddressId == AddressId);
+
         }
 
         public bool Update(int AddressId, Address address)

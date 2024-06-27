@@ -12,6 +12,7 @@ namespace AgendaDoBarbeiro.Core.Service
         public void Update(Professional professional);
         public void Delete(long id);
         public Task<IEnumerable<Professional?>> GetAll();
+        public Task<IEnumerable<Professional?>> GetAll(long EnterpriseId);
         public Task<Professional?> Get(long id);
     }
 }

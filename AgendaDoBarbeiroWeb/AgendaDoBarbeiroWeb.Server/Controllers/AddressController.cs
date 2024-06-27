@@ -1,3 +1,4 @@
+
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,12 @@ namespace Controllers
             _addressService = addressService;
         }
 
+
         [HttpGet]
         public ActionResult Index()
         {
             return Content("Get successfully made!", "text/plain");
         }
 
-        
     }
 }

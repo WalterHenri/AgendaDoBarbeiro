@@ -43,6 +43,11 @@ namespace AgendaDoBarbeiro.Service
             return await _dbContext.Professionals.ToListAsync();
         }
 
+        public async Task<IEnumerable<Professional?>> GetAll(long EnterpriseId)
+        {
+           return await _dbContext.Professionals.Where(p => p.EnterpriseId == EnterpriseId).Include(p => p.ProfessionalNavigation).ToListAsync();
+        }
+
         public void Update(Professional professional)
         {
             _dbContext.Update(professional);

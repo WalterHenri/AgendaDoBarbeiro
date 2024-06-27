@@ -10,6 +10,7 @@ namespace AgendaDoBarbeiroAPI.Controllers
     public class EnterpriseController : Controller
     {
         private readonly IEnterpriseService _enterpriseService;
+        private readonly IProfessionalService _professionalService;
         private readonly IMapper _mapper;
 
         EnterpriseController(IMapper mapper, IEnterpriseService enterpriseService
@@ -17,6 +18,7 @@ namespace AgendaDoBarbeiroAPI.Controllers
         {
             _mapper = mapper;
             _enterpriseService = enterpriseService;
+            _professionalService = professionalService;
         }
 
         /// <summary>
@@ -99,10 +101,10 @@ namespace AgendaDoBarbeiroAPI.Controllers
 
         [HttpGet("{id}/professionals")]
 
-        public ActionResult<EnterpriseDto> GetAllProfessionals(int id)
+        public ActionResult<ProfessionalDto> GetAllProfessionals(int id)
         {
-            var enterprise = _enterpriseService.Get(id);
-            return Ok(_mapper.Map<EnterpriseDto>(enterprise));
+            var professionals = _professionalService.GetAll(id);
+            return Ok(_mapper.Map<ProfessionalDto>(professionals));
         }
 
     }
